@@ -1,0 +1,13 @@
+{
+	"name": "my-app",
+	"scripts": {
+		"dev": "bun run --hot src/index.ts"
+	},
+	"dependencies": {
+		"hono": "^4.9.7",
+		"dotenv": "^17.2.2"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	}
+}
