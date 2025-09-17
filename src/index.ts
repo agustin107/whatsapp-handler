@@ -61,7 +61,7 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 						message: body,
 						from,
 						id: messageId,
-						companyId: "ead51a48-4866-4248-824a-4bdeaaf9a349",
+						companyId,
 					}),
 				});
 			},
