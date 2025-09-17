@@ -23,10 +23,9 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 	const body = await c.req.json();
 	const { event, payload } = body;
 	const abortController = new AbortController();
-
-	console.info("WhatsApp webhook received", body);
-
 	const companyId = c.req.header("X-Company-Id") ?? "";
+
+	console.info("WhatsApp webhook received", companyId);
 
 	if (event !== "message") {
 		console.error("❌ Unsupported event: ", event);
@@ -38,7 +37,7 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 
 	const { body: text, from, id: messageId } = payload;
 
-	if (from === "status@broadcast" || !text) {
+	if (from === "status@broadcast" || !text || !companyId) {
 		console.info("❌ Unsupported from or text: ", from, text);
 
 		return c.json({ status: "OK" }, 200);
