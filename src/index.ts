@@ -28,7 +28,8 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 	console.info("WhatsApp webhook received", companyId);
 
 	if (event !== "message") {
-		console.error("❌ Unsupported event: ", event);
+		console.warn("❌ Unsupported event: ", event);
+
 		return c.json(
 			{ status: "error", message: `Unsupported event: ${event}` },
 			400,
@@ -38,7 +39,7 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 	const { body: text, from, id: messageId } = payload;
 
 	if (from === "status@broadcast" || !text || !companyId) {
-		console.info("❌ Unsupported from or text: ", from, text);
+		console.warn(`❌ Unsupported from or text: ${from}`, text);
 
 		return c.json({ status: "OK" }, 200);
 	}
@@ -50,8 +51,8 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 				text,
 				abortController,
 			},
-			async (body) => {
-				console.log("Processing queue for", from, ":", body);
+			async (body, fromQueue) => {
+				console.log(`🔄 Processing queue for ${fromQueue}: ${body}`);
 
 				await fetch(`${process.env.DASHBOARD_URL}/api/webhooks/whatsapp`, {
 					method: "POST",
@@ -68,7 +69,7 @@ app.post("/api/webhooks/whatsapp", async (c) => {
 
 		return c.json({ status: "OK" }, 200);
 	} catch (error) {
-		console.error("Error processing queue for", from, ":", error);
+		console.error(`Error processing queue for ${from}: ${error}`);
 		return c.json({ status: "error", message: "Internal server error" }, 500);
 	}
 });
